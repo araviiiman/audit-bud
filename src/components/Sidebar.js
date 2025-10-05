@@ -109,8 +109,16 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
     <div className="w-full bg-dark-sidebar border-r border-gray-700 flex flex-col h-screen">
       {/* Header */}
       <div className="p-6 border-b border-gray-700">
-        <h1 className="text-2xl font-bold text-dark-text mb-2">Audit Bud</h1>
-        <p className="text-sm text-dark-text-secondary">
+        <div className="flex items-center space-x-3 mb-2">
+          <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-blue-600 rounded-lg flex items-center justify-center">
+            <FileText className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-dark-text tracking-tight">Audit Bud</h1>
+            <div className="w-12 h-0.5 bg-gradient-to-r from-accent-blue to-transparent mt-1"></div>
+          </div>
+        </div>
+        <p className="text-sm text-dark-text-secondary font-medium">
           Your Automated Audit Readiness Assistant
         </p>
       </div>
