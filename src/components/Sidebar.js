@@ -175,7 +175,7 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
                   </p>
                 ) : (
                   <div 
-                    className="text-sm text-gray-800 prose prose-sm max-w-none"
+                    className="text-sm text-white prose prose-sm max-w-none"
                     dangerouslySetInnerHTML={{ 
                       __html: formatBotResponse(msg.content || 'No content') 
                     }}
