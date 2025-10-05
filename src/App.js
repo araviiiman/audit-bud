@@ -67,9 +67,6 @@ function App() {
     setIsLoading(true);
     
     try {
-      console.log('Sending message to webhook:', message);
-      console.log('Webhook URL:', 'https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86');
-      
       // Try the webhook with different configurations
       const webhookConfigs = [
         {
@@ -96,7 +93,6 @@ function App() {
       // Try each configuration
       for (const config of webhookConfigs) {
         try {
-          console.log('Trying webhook config:', config);
           response = await fetch(config.url, {
             method: 'POST',
             headers: config.headers,
@@ -108,16 +104,12 @@ function App() {
           });
           
           if (response.ok) {
-            console.log('Webhook successful with config:', config);
             break;
           } else {
-            console.log('Webhook failed with status:', response.status);
             const errorText = await response.text();
-            console.error('Error response:', errorText);
             lastError = new Error(`HTTP error! status: ${response.status} - ${errorText}`);
           }
         } catch (error) {
-          console.error('Webhook attempt failed:', error);
           lastError = error;
           continue;
         }
@@ -127,11 +119,7 @@ function App() {
         throw lastError || new Error('All webhook attempts failed');
       }
 
-      console.log('Response status:', response.status);
-      console.log('Response headers:', response.headers);
-
       const data = await response.json();
-      console.log('Response data:', data);
       
       // Add chat message
       setChatMessages(prev => [...prev, data.text || 'No response received']);
@@ -143,9 +131,7 @@ function App() {
       }
       
     } catch (error) {
-      console.error('Detailed error:', error);
-      console.error('Error message:', error.message);
-      console.error('Error stack:', error.stack);
+      console.error('Error sending message:', error);
       
       // Provide more specific error messages
       let errorMessage = 'Sorry, there was an error processing your request.';

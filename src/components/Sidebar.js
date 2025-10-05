@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Send, Loader2, Camera, TestTube } from 'lucide-react';
+import { FileText, Send, Loader2, Camera } from 'lucide-react';
 
 const Sidebar = ({ onSendMessage, isLoading }) => {
   const [message, setMessage] = useState('');
@@ -15,72 +15,6 @@ const Sidebar = ({ onSendMessage, isLoading }) => {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !isLoading) {
       handleSendMessage();
-    }
-  };
-
-  const handleTestWebhook = async () => {
-    console.log('Testing webhook connection...');
-    try {
-      // Try different configurations
-      const webhookConfigs = [
-        {
-          url: 'https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type'
-          }
-        },
-        {
-          url: 'https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        }
-      ];
-
-      let success = false;
-      let lastError = null;
-
-      for (const config of webhookConfigs) {
-        try {
-          console.log('Testing webhook config:', config);
-          const response = await fetch(config.url, {
-            method: 'POST',
-            headers: config.headers,
-            mode: 'cors',
-            credentials: 'omit',
-            body: JSON.stringify({
-              query: 'test connection'
-            })
-          });
-          
-          console.log('Test response status:', response.status);
-          const data = await response.text();
-          console.log('Test response data:', data);
-          
-          if (response.ok) {
-            alert(`Webhook test successful! Status: ${response.status}\nResponse: ${data}\nCheck console for details.`);
-            success = true;
-            break;
-          } else {
-            lastError = `HTTP ${response.status}: ${data}`;
-          }
-        } catch (error) {
-          console.error('Test error:', error);
-          lastError = error.message;
-          continue;
-        }
-      }
-
-      if (!success) {
-        alert(`Webhook test failed: ${lastError}\n\nThis is likely a CORS issue. Please check your n8n webhook configuration.`);
-      }
-    } catch (error) {
-      console.error('Test error:', error);
-      alert(`Webhook test failed: ${error.message}\n\nPlease check your n8n webhook configuration and CORS settings.`);
     }
   };
 
@@ -180,17 +114,6 @@ const Sidebar = ({ onSendMessage, isLoading }) => {
             </p>
           </div>
         </motion.div>
-
-        {/* Test Button */}
-        <div className="mb-4">
-          <button
-            onClick={handleTestWebhook}
-            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
-          >
-            <TestTube className="w-4 h-4" />
-            <span>Test Webhook Connection</span>
-          </button>
-        </div>
 
         {/* Input Area */}
         <div className="flex space-x-2">
