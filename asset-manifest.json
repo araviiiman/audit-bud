@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/audit-bud/static/css/main.54d15256.css",
-    "main.js": "/audit-bud/static/js/main.947419ca.js",
+    "main.js": "/audit-bud/static/js/main.043242e8.js",
     "static/js/239.01de606b.chunk.js": "/audit-bud/static/js/239.01de606b.chunk.js",
     "index.html": "/audit-bud/index.html",
     "main.54d15256.css.map": "/audit-bud/static/css/main.54d15256.css.map",
-    "main.947419ca.js.map": "/audit-bud/static/js/main.947419ca.js.map",
+    "main.043242e8.js.map": "/audit-bud/static/js/main.043242e8.js.map",
     "239.01de606b.chunk.js.map": "/audit-bud/static/js/239.01de606b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.54d15256.css",
-    "static/js/main.947419ca.js"
+    "static/js/main.043242e8.js"
   ]
 }
