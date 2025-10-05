@@ -138,7 +138,7 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
               <Bot className="w-4 h-4 text-white" />
             </div>
             <div className="bg-gray-700 rounded-lg p-4 max-w-[85%]">
-              <p className="text-gray-200 text-sm">
+              <p className="text-white text-sm">
                 I'm ready to answer questions about <span className="text-accent-blue font-medium">audit document</span>. What would you like to know?
               </p>
             </div>
@@ -167,7 +167,7 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
               <div className={`rounded-lg p-4 max-w-[85%] ${
                 msg.type === 'user' 
                   ? 'bg-accent-blue text-white' 
-                  : 'bg-gray-700 text-gray-200'
+                  : 'bg-gray-700 text-white'
               }`}>
                 {msg.type === 'user' ? (
                   <p className="text-sm text-white">
