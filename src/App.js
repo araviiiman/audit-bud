@@ -141,11 +141,18 @@ function App() {
       console.log('responseData.sourceMetadata:', responseData.sourceMetadata);
       
       // Handle the correct response format from n8n
-      if (responseData.text) {
+      if (responseData && responseData.text) {
         console.log('Setting chat message:', responseData.text);
         setChatMessages([responseData.text]);
+      } else if (data && data[0] && data[0].text) {
+        console.log('Fallback: Using data[0].text directly:', data[0].text);
+        setChatMessages([data[0].text]);
       } else {
         console.log('No text found, setting default message');
+        console.log('responseData exists:', !!responseData);
+        console.log('responseData.text exists:', !!(responseData && responseData.text));
+        console.log('data[0] exists:', !!(data && data[0]));
+        console.log('data[0].text exists:', !!(data && data[0] && data[0].text));
         setChatMessages(['No response received']);
       }
       
