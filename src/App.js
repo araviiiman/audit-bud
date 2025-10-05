@@ -28,6 +28,8 @@ function App() {
   };
 
   const handleSendMessage = async (message) => {
+    console.log('=== Starting handleSendMessage ===');
+    console.log('Message:', message);
     setIsLoading(true);
 
     // Add user message to chat
@@ -37,6 +39,7 @@ function App() {
     setMetadataDocuments([]);
 
     try {
+      console.log('=== Attempting webhook call ===');
       // Try the webhook with different configurations
       const webhookConfigs = [
         {
@@ -63,6 +66,7 @@ function App() {
       // Try each configuration
       for (const config of webhookConfigs) {
         try {
+          console.log('Trying webhook config:', config.url);
           response = await fetch(config.url, {
             method: 'POST',
             headers: config.headers,
@@ -73,23 +77,32 @@ function App() {
             })
           });
 
+          console.log('Response status:', response.status);
+          console.log('Response ok:', response.ok);
+
           if (response.ok) {
+            console.log('Webhook call successful!');
             break; // Success, exit loop
           } else {
             const errorText = await response.text();
+            console.log('Webhook failed with status:', response.status);
+            console.log('Error text:', errorText);
             lastError = new Error(`HTTP error! status: ${response.status} - ${errorText}`);
           }
         } catch (error) {
+          console.log('Webhook attempt failed:', error.message);
           lastError = error;
           continue;
         }
       }
 
       if (!response || !response.ok) {
+        console.log('All webhook attempts failed, throwing error');
         throw lastError || new Error('All webhook attempts failed');
       }
 
       const data = await response.json();
+      console.log('=== Webhook Response Received ===');
       console.log('Raw response data:', data);
       console.log('Data type:', typeof data);
       console.log('Is array:', Array.isArray(data));
@@ -108,29 +121,32 @@ function App() {
       
       // Handle the correct response format from n8n
       if (responseData && responseData.text) {
-        console.log('Setting chat message:', responseData.text);
+        console.log('Setting chat message from webhook:', responseData.text);
         setChatMessages(prev => [...prev, { type: 'bot', content: responseData.text }]);
       } else if (data && data[0] && data[0].text) {
         console.log('Fallback: Using data[0].text directly:', data[0].text);
         setChatMessages(prev => [...prev, { type: 'bot', content: data[0].text }]);
       } else {
-        console.log('No text found, setting default message');
+        console.log('No text found in response, setting default message');
         console.log('responseData exists:', !!responseData);
         console.log('responseData.text exists:', !!(responseData && responseData.text));
         console.log('data[0] exists:', !!(data && data[0]));
         console.log('data[0].text exists:', !!(data && data[0] && data[0].text));
-        setChatMessages(prev => [...prev, { type: 'bot', content: 'No response received' }]);
+        setChatMessages(prev => [...prev, { type: 'bot', content: 'No response received from webhook' }]);
       }
       
       // Parse and update metadata - handle both formats
       if (responseData && responseData.sourceMetadata) {
+        console.log('Processing sourceMetadata...');
         try {
           // Check if sourceMetadata is a JSON string that needs parsing
           if (typeof responseData.sourceMetadata === 'string') {
+            console.log('Parsing sourceMetadata JSON string...');
             const parsedMetadata = JSON.parse(responseData.sourceMetadata);
+            console.log('Parsed metadata:', parsedMetadata);
             setMetadataDocuments(parsedMetadata);
           } else if (Array.isArray(responseData.sourceMetadata)) {
-            // If it's already an array, use it directly
+            console.log('sourceMetadata is already an array');
             setMetadataDocuments(responseData.sourceMetadata);
           } else {
             console.warn('sourceMetadata is not a string or array:', responseData.sourceMetadata);
@@ -141,10 +157,12 @@ function App() {
           setMetadataDocuments([]);
         }
       } else {
+        console.log('No sourceMetadata found in response');
         setMetadataDocuments([]);
       }
 
     } catch (error) {
+      console.log('=== Webhook Error ===');
       console.error('Detailed error:', error);
       console.error('Error message:', error.message);
       console.error('Error stack:', error.stack);
@@ -163,8 +181,10 @@ function App() {
       } else if (error.message.includes('All webhook attempts failed')) {
         errorMessage = 'Connection failed: Unable to reach the webhook server. Please check your n8n workflow configuration.';
       }
+      console.log('Setting error message:', errorMessage);
       setChatMessages(prev => [...prev, { type: 'bot', content: errorMessage }]);
     } finally {
+      console.log('=== handleSendMessage completed ===');
       setIsLoading(false);
     }
   };
