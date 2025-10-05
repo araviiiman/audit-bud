@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Send, Loader2, Camera } from 'lucide-react';
+import { FileText, Send, Loader2, Camera, TestTube } from 'lucide-react';
 
 const Sidebar = ({ onSendMessage, isLoading }) => {
   const [message, setMessage] = useState('');
@@ -15,6 +15,34 @@ const Sidebar = ({ onSendMessage, isLoading }) => {
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !isLoading) {
       handleSendMessage();
+    }
+  };
+
+  const handleTestWebhook = async () => {
+    console.log('Testing webhook connection...');
+    try {
+      const response = await fetch('https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          query: 'test connection'
+        })
+      });
+      
+      console.log('Test response status:', response.status);
+      const data = await response.text();
+      console.log('Test response data:', data);
+      
+      if (response.ok) {
+        alert('Webhook test successful! Check console for details.');
+      } else {
+        alert(`Webhook test failed with status: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Test error:', error);
+      alert(`Webhook test failed: ${error.message}`);
     }
   };
 
@@ -114,6 +142,17 @@ const Sidebar = ({ onSendMessage, isLoading }) => {
             </p>
           </div>
         </motion.div>
+
+        {/* Test Button */}
+        <div className="mb-4">
+          <button
+            onClick={handleTestWebhook}
+            className="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 px-4 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center justify-center space-x-2"
+          >
+            <TestTube className="w-4 h-4" />
+            <span>Test Webhook Connection</span>
+          </button>
+        </div>
 
         {/* Input Area */}
         <div className="flex space-x-2">

@@ -67,6 +67,9 @@ function App() {
     setIsLoading(true);
     
     try {
+      console.log('Sending message to webhook:', message);
+      console.log('Webhook URL:', 'https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86');
+      
       const response = await fetch('https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86', {
         method: 'POST',
         headers: {
@@ -77,11 +80,17 @@ function App() {
         })
       });
 
+      console.log('Response status:', response.status);
+      console.log('Response headers:', response.headers);
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        console.error('HTTP error response:', errorText);
+        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
+      console.log('Response data:', data);
       
       // Add chat message
       setChatMessages(prev => [...prev, data.text || 'No response received']);
@@ -93,8 +102,26 @@ function App() {
       }
       
     } catch (error) {
-      console.error('Error sending message:', error);
-      setChatMessages(prev => [...prev, 'Sorry, there was an error processing your request.']);
+      console.error('Detailed error:', error);
+      console.error('Error message:', error.message);
+      console.error('Error stack:', error.stack);
+      
+      // Provide more specific error messages
+      let errorMessage = 'Sorry, there was an error processing your request.';
+      
+      if (error.message.includes('Failed to fetch')) {
+        errorMessage = 'Network error: Unable to connect to the webhook. Please check your internet connection.';
+      } else if (error.message.includes('CORS')) {
+        errorMessage = 'CORS error: The webhook server is blocking requests from this domain.';
+      } else if (error.message.includes('HTTP error')) {
+        errorMessage = `Server error: ${error.message}`;
+      } else if (error.message.includes('404')) {
+        errorMessage = 'Webhook not found: The endpoint URL may be incorrect.';
+      } else if (error.message.includes('500')) {
+        errorMessage = 'Server error: The webhook server encountered an internal error.';
+      }
+      
+      setChatMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
