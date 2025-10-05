@@ -21,28 +21,66 @@ const Sidebar = ({ onSendMessage, isLoading }) => {
   const handleTestWebhook = async () => {
     console.log('Testing webhook connection...');
     try {
-      const response = await fetch('https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // Try different configurations
+      const webhookConfigs = [
+        {
+          url: 'https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
+          }
         },
-        body: JSON.stringify({
-          query: 'test connection'
-        })
-      });
-      
-      console.log('Test response status:', response.status);
-      const data = await response.text();
-      console.log('Test response data:', data);
-      
-      if (response.ok) {
-        alert('Webhook test successful! Check console for details.');
-      } else {
-        alert(`Webhook test failed with status: ${response.status}`);
+        {
+          url: 'https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      ];
+
+      let success = false;
+      let lastError = null;
+
+      for (const config of webhookConfigs) {
+        try {
+          console.log('Testing webhook config:', config);
+          const response = await fetch(config.url, {
+            method: 'POST',
+            headers: config.headers,
+            mode: 'cors',
+            credentials: 'omit',
+            body: JSON.stringify({
+              query: 'test connection'
+            })
+          });
+          
+          console.log('Test response status:', response.status);
+          const data = await response.text();
+          console.log('Test response data:', data);
+          
+          if (response.ok) {
+            alert(`Webhook test successful! Status: ${response.status}\nResponse: ${data}\nCheck console for details.`);
+            success = true;
+            break;
+          } else {
+            lastError = `HTTP ${response.status}: ${data}`;
+          }
+        } catch (error) {
+          console.error('Test error:', error);
+          lastError = error.message;
+          continue;
+        }
+      }
+
+      if (!success) {
+        alert(`Webhook test failed: ${lastError}\n\nThis is likely a CORS issue. Please check your n8n webhook configuration.`);
       }
     } catch (error) {
       console.error('Test error:', error);
-      alert(`Webhook test failed: ${error.message}`);
+      alert(`Webhook test failed: ${error.message}\n\nPlease check your n8n webhook configuration and CORS settings.`);
     }
   };
 

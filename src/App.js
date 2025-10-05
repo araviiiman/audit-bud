@@ -70,24 +70,65 @@ function App() {
       console.log('Sending message to webhook:', message);
       console.log('Webhook URL:', 'https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86');
       
-      const response = await fetch('https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // Try the webhook with different configurations
+      const webhookConfigs = [
+        {
+          url: 'https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
+          }
         },
-        body: JSON.stringify({
-          query: message
-        })
-      });
+        {
+          url: 'https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      ];
+
+      let response = null;
+      let lastError = null;
+
+      // Try each configuration
+      for (const config of webhookConfigs) {
+        try {
+          console.log('Trying webhook config:', config);
+          response = await fetch(config.url, {
+            method: 'POST',
+            headers: config.headers,
+            mode: 'cors',
+            credentials: 'omit',
+            body: JSON.stringify({
+              query: message
+            })
+          });
+          
+          if (response.ok) {
+            console.log('Webhook successful with config:', config);
+            break;
+          } else {
+            console.log('Webhook failed with status:', response.status);
+            const errorText = await response.text();
+            console.error('Error response:', errorText);
+            lastError = new Error(`HTTP error! status: ${response.status} - ${errorText}`);
+          }
+        } catch (error) {
+          console.error('Webhook attempt failed:', error);
+          lastError = error;
+          continue;
+        }
+      }
+
+      if (!response || !response.ok) {
+        throw lastError || new Error('All webhook attempts failed');
+      }
 
       console.log('Response status:', response.status);
       console.log('Response headers:', response.headers);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('HTTP error response:', errorText);
-        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`);
-      }
 
       const data = await response.json();
       console.log('Response data:', data);
@@ -110,15 +151,17 @@ function App() {
       let errorMessage = 'Sorry, there was an error processing your request.';
       
       if (error.message.includes('Failed to fetch')) {
-        errorMessage = 'Network error: Unable to connect to the webhook. Please check your internet connection.';
+        errorMessage = 'Network error: Unable to connect to the webhook. This might be a CORS issue or the webhook server is not accessible.';
       } else if (error.message.includes('CORS')) {
-        errorMessage = 'CORS error: The webhook server is blocking requests from this domain.';
+        errorMessage = 'CORS error: The webhook server is blocking requests from this domain. Please configure CORS headers on your n8n webhook.';
       } else if (error.message.includes('HTTP error')) {
         errorMessage = `Server error: ${error.message}`;
       } else if (error.message.includes('404')) {
         errorMessage = 'Webhook not found: The endpoint URL may be incorrect.';
       } else if (error.message.includes('500')) {
         errorMessage = 'Server error: The webhook server encountered an internal error.';
+      } else if (error.message.includes('All webhook attempts failed')) {
+        errorMessage = 'Connection failed: Unable to reach the webhook server. Please check your n8n workflow configuration.';
       }
       
       setChatMessages(prev => [...prev, errorMessage]);
