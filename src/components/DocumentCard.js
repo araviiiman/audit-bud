@@ -55,7 +55,7 @@ const DocumentCard = ({ documentData }) => {
             <span className="bg-accent-blue text-white text-xs px-2 py-1 rounded-full font-medium flex items-center justify-center min-w-[24px] h-6">
               #{rank.rank}
             </span>
-            <span className="text-xs text-accent-grey bg-gray-700 px-2 py-1 rounded">
+            <span className="text-xs text-white bg-gray-700 px-2 py-1 rounded">
               {(rank.accuracy * 100).toFixed(1)}%
             </span>
           </div>
