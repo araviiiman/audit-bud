@@ -126,20 +126,37 @@ function App() {
       const data = await response.json();
       console.log('Received data:', data);
       
+      // Handle the response format - n8n returns an array with a single object
+      let responseData = data;
+      if (Array.isArray(data) && data.length > 0) {
+        responseData = data[0]; // Get the first (and only) object from the array
+      }
+      
       // Handle the correct response format from n8n
-      if (data.text) {
-        setChatMessages([data.text]);
+      if (responseData.text) {
+        setChatMessages([responseData.text]);
       } else {
         setChatMessages(['No response received']);
       }
       
       // Parse and update metadata - handle both formats
-      if (data.sourceMetadata && Array.isArray(data.sourceMetadata)) {
-        // New format: sourceMetadata is already an array of objects
-        setMetadataDocuments(data.sourceMetadata);
-      } else if (data.sourceMetadataString) {
+      if (responseData.sourceMetadata) {
+        try {
+          // Check if sourceMetadata is a JSON string that needs parsing
+          if (typeof responseData.sourceMetadata === 'string') {
+            const parsedMetadata = JSON.parse(responseData.sourceMetadata);
+            setMetadataDocuments(parsedMetadata);
+          } else if (Array.isArray(responseData.sourceMetadata)) {
+            // Already an array
+            setMetadataDocuments(responseData.sourceMetadata);
+          }
+        } catch (error) {
+          console.error('Error parsing sourceMetadata:', error);
+          console.log('Raw sourceMetadata:', responseData.sourceMetadata);
+        }
+      } else if (responseData.sourceMetadataString) {
         // Old format: sourceMetadataString needs parsing
-        const parsedDocs = parseMetadataString(data.sourceMetadataString);
+        const parsedDocs = parseMetadataString(responseData.sourceMetadataString);
         setMetadataDocuments(parsedDocs);
       }
       
