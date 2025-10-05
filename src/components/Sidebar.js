@@ -118,7 +118,7 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
           </motion.div>
 
           {/* Chat Messages */}
-          {chatMessages.map((msg, index) => (
+          {(chatMessages || []).map((msg, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
@@ -147,7 +147,7 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
                     ? 'text-white' 
                     : 'text-dark-text-secondary'
                 }`}>
-                  {msg.content}
+                  {msg.content || 'No content'}
                 </p>
               </div>
             </motion.div>

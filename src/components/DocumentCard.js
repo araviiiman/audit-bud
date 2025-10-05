@@ -31,7 +31,7 @@ const DocumentCard = ({ documentData }) => {
 
   // Format ranks and sections for better readability
   const formatRanksSections = (ranksStr) => {
-    if (!ranksStr || ranksStr === "N/A") return "N/A";
+    if (!ranksStr || ranksStr === "N/A") return <span className="text-dark-text">N/A</span>;
     
     try {
       // Split by comma and process each rank
@@ -197,7 +197,7 @@ const DocumentCard = ({ documentData }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-dark-text-secondary mb-1">Keywords</p>
-              <p className="text-lg font-semibold text-dark-text">{Array.isArray(data.keywords) ? data.keywords.join(', ') : data.keywords}</p>
+              <p className="text-lg font-semibold text-dark-text">{Array.isArray(data.keywords) ? data.keywords.join(', ') : (data.keywords || 'None')}</p>
             </div>
             <Tag className="w-5 h-5 text-dark-text-secondary" />
           </div>
