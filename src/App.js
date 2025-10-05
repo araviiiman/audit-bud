@@ -66,6 +66,10 @@ function App() {
   const handleSendMessage = async (message) => {
     setIsLoading(true);
     
+    // Clear previous error messages when starting a new query
+    setChatMessages([]);
+    setMetadataDocuments([]);
+    
     try {
       // Try the webhook with different configurations
       const webhookConfigs = [
@@ -120,12 +124,21 @@ function App() {
       }
 
       const data = await response.json();
+      console.log('Received data:', data);
       
-      // Add chat message
-      setChatMessages(prev => [...prev, data.text || 'No response received']);
+      // Handle the correct response format from n8n
+      if (data.text) {
+        setChatMessages([data.text]);
+      } else {
+        setChatMessages(['No response received']);
+      }
       
-      // Parse and update metadata
-      if (data.sourceMetadataString) {
+      // Parse and update metadata - handle both formats
+      if (data.sourceMetadata && Array.isArray(data.sourceMetadata)) {
+        // New format: sourceMetadata is already an array of objects
+        setMetadataDocuments(data.sourceMetadata);
+      } else if (data.sourceMetadataString) {
+        // Old format: sourceMetadataString needs parsing
         const parsedDocs = parseMetadataString(data.sourceMetadataString);
         setMetadataDocuments(parsedDocs);
       }
@@ -150,7 +163,7 @@ function App() {
         errorMessage = 'Connection failed: Unable to reach the webhook server. Please check your n8n workflow configuration.';
       }
       
-      setChatMessages(prev => [...prev, errorMessage]);
+      setChatMessages([errorMessage]);
     } finally {
       setIsLoading(false);
     }

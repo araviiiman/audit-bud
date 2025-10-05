@@ -16,14 +16,14 @@ import {
 const DocumentCard = ({ documentData }) => {
   // Default mock data if no documentData provided
   const defaultData = {
-    id: "Unknown",
+    document_id: "Unknown",
     version: "N/A",
     status: "N/A",
-    effectiveDate: "10/4/2025",
+    effective_date: "10/4/2025",
     author: "Unknown",
-    chunks: "0",
+    chunk_count: "0",
     summary: "No summary available",
-    ranksSections: "N/A",
+    ranks_sections_str: "N/A",
     keywords: "None"
   };
 
@@ -52,9 +52,9 @@ const DocumentCard = ({ documentData }) => {
       className="space-y-6"
     >
       {/* Document Title */}
-      {data.title && (
+      {data.document_type && (
         <motion.div variants={itemVariants} className="mb-6">
-          <h2 className="text-xl font-semibold text-dark-text">{data.title}</h2>
+          <h2 className="text-xl font-semibold text-dark-text">{data.document_type}</h2>
         </motion.div>
       )}
 
@@ -68,7 +68,7 @@ const DocumentCard = ({ documentData }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-dark-text-secondary mb-1">Document ID</p>
-              <p className="text-lg font-semibold text-dark-text">{data.id}</p>
+              <p className="text-lg font-semibold text-dark-text">{data.document_id || data.id}</p>
             </div>
             <FileText className="w-5 h-5 text-dark-text-secondary" />
           </div>
@@ -101,7 +101,7 @@ const DocumentCard = ({ documentData }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-dark-text-secondary mb-1">Effective Date</p>
-              <p className="text-lg font-semibold text-dark-text">{data.effectiveDate}</p>
+              <p className="text-lg font-semibold text-dark-text">{data.effective_date || data.effectiveDate}</p>
             </div>
             <Calendar className="w-5 h-5 text-dark-text-secondary" />
           </div>
@@ -123,7 +123,7 @@ const DocumentCard = ({ documentData }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-dark-text-secondary mb-1">Chunks</p>
-              <p className="text-lg font-semibold text-dark-text">{data.chunks}</p>
+              <p className="text-lg font-semibold text-dark-text">{data.chunk_count || data.chunks}</p>
             </div>
             <Layers className="w-5 h-5 text-dark-text-secondary" />
           </div>
@@ -145,7 +145,7 @@ const DocumentCard = ({ documentData }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-dark-text-secondary mb-1">Ranks & Sections</p>
-              <p className="text-lg font-semibold text-dark-text">{data.ranksSections}</p>
+              <p className="text-lg font-semibold text-dark-text">{data.ranks_sections_str || data.ranksSections}</p>
             </div>
             <BarChart3 className="w-5 h-5 text-dark-text-secondary" />
           </div>
@@ -156,7 +156,7 @@ const DocumentCard = ({ documentData }) => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-dark-text-secondary mb-1">Keywords</p>
-              <p className="text-lg font-semibold text-dark-text">{data.keywords}</p>
+              <p className="text-lg font-semibold text-dark-text">{Array.isArray(data.keywords) ? data.keywords.join(', ') : data.keywords}</p>
             </div>
             <Tag className="w-5 h-5 text-dark-text-secondary" />
           </div>
