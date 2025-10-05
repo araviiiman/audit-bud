@@ -52,7 +52,7 @@ const DocumentCard = ({ documentData }) => {
       return ranks.map(rank => (
         <div key={rank.rank} className="mb-2 last:mb-0">
           <div className="flex items-center space-x-2">
-            <span className="bg-accent-blue text-white text-xs px-2 py-1 rounded-full font-medium">
+            <span className="bg-accent-blue text-white text-xs px-2 py-1 rounded-full font-medium flex items-center justify-center min-w-[24px] h-6">
               #{rank.rank}
             </span>
             <span className="text-xs text-accent-grey bg-gray-700 px-2 py-1 rounded">
