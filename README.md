@@ -189,4 +189,4 @@ This project is proprietary software for Novo Nordisk.
 
 ---
 
-**Built with ❤️ for pharmaceutical audit compliance**
+**Built with ❤️ for pharmaceutical audit compliance - Updated with markdown formatting**
