@@ -67,7 +67,7 @@ function App() {
     setIsLoading(true);
     
     try {
-      const response = await fetch('https://n8n.srv1033356.hstgr.cloud/webhook/dc46cc6c-b02c-4dff-85c0-41f69e34ad86', {
+      const response = await fetch('https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

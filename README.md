@@ -120,7 +120,7 @@ audit-bud/
 ### Webhook Integration
 
 The app integrates with your n8n webhook:
-- **Endpoint**: `https://n8n.srv1033356.hstgr.cloud/webhook/dc46cc6c-b02c-4dff-85c0-41f69e34ad86`
+- **Endpoint**: `https://n8n.srv1033356.hstgr.cloud/webhook-test/dc46cc6c-b02c-4dff-85c0-41f69e34ad86`
 - **Method**: POST
 - **Payload**: `{ "query": "user message" }`
 - **Response**: `{ "text": "response", "sourceMetadataString": "metadata" }`
