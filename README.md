@@ -183,10 +183,6 @@ For issues and questions:
 - **GitHub Issues**: [Create an issue](https://github.com/araviiiman/audit-bud/issues)
 - **Repository**: [https://github.com/araviiiman/audit-bud](https://github.com/araviiiman/audit-bud)
 
-## 📄 License
-
-This project is proprietary software for Novo Nordisk.
-
 ---
 
 **Built with ❤️ for pharmaceutical audit compliance - Updated with markdown formatting**
