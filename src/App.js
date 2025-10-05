@@ -124,30 +124,44 @@ function App() {
       }
 
       const data = await response.json();
-      console.log('Received data:', data);
+      console.log('Raw response data:', data);
+      console.log('Data type:', typeof data);
+      console.log('Is array:', Array.isArray(data));
+      console.log('Data length:', data?.length);
       
       // Handle the response format - n8n returns an array with a single object
       let responseData = data;
       if (Array.isArray(data) && data.length > 0) {
         responseData = data[0]; // Get the first (and only) object from the array
+        console.log('Extracted responseData:', responseData);
       }
+      
+      console.log('Final responseData:', responseData);
+      console.log('responseData.text:', responseData.text);
+      console.log('responseData.sourceMetadata:', responseData.sourceMetadata);
       
       // Handle the correct response format from n8n
       if (responseData.text) {
+        console.log('Setting chat message:', responseData.text);
         setChatMessages([responseData.text]);
       } else {
+        console.log('No text found, setting default message');
         setChatMessages(['No response received']);
       }
       
       // Parse and update metadata - handle both formats
       if (responseData.sourceMetadata) {
+        console.log('Found sourceMetadata:', responseData.sourceMetadata);
+        console.log('sourceMetadata type:', typeof responseData.sourceMetadata);
         try {
           // Check if sourceMetadata is a JSON string that needs parsing
           if (typeof responseData.sourceMetadata === 'string') {
+            console.log('Parsing JSON string...');
             const parsedMetadata = JSON.parse(responseData.sourceMetadata);
+            console.log('Parsed metadata:', parsedMetadata);
             setMetadataDocuments(parsedMetadata);
           } else if (Array.isArray(responseData.sourceMetadata)) {
-            // Already an array
+            console.log('sourceMetadata is already an array');
             setMetadataDocuments(responseData.sourceMetadata);
           }
         } catch (error) {
@@ -155,9 +169,11 @@ function App() {
           console.log('Raw sourceMetadata:', responseData.sourceMetadata);
         }
       } else if (responseData.sourceMetadataString) {
-        // Old format: sourceMetadataString needs parsing
+        console.log('Using old format sourceMetadataString');
         const parsedDocs = parseMetadataString(responseData.sourceMetadataString);
         setMetadataDocuments(parsedDocs);
+      } else {
+        console.log('No metadata found in response');
       }
       
     } catch (error) {
