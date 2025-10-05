@@ -106,9 +106,9 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
   };
 
   return (
-    <div className="w-full bg-dark-sidebar border-r border-gray-700 flex flex-col h-screen">
+    <div className="w-full bg-dark-sidebar border-r border-gray-700 flex flex-col h-screen overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-700">
+      <div className="p-6 border-b border-gray-700 flex-shrink-0">
         <div className="flex items-center space-x-3 mb-2">
           <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-blue-600 rounded-lg flex items-center justify-center">
             <FileText className="w-6 h-6 text-white" />
@@ -124,7 +124,7 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
       </div>
 
       {/* Chat Area */}
-      <div className="flex-1 p-6 flex flex-col">
+      <div className="flex-1 p-6 flex flex-col min-h-0">
         {/* Chat Messages */}
         <div className="flex-1 overflow-y-auto mb-4 space-y-4">
           {/* Welcome Message */}
@@ -206,7 +206,7 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
         </div>
 
         {/* Input Area */}
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 flex-shrink-0">
           <input
             type="text"
             value={message}
