@@ -29,6 +29,45 @@ const DocumentCard = ({ documentData }) => {
 
   const data = documentData || defaultData;
 
+  // Format ranks and sections for better readability
+  const formatRanksSections = (ranksStr) => {
+    if (!ranksStr || ranksStr === "N/A") return "N/A";
+    
+    try {
+      // Split by comma and process each rank
+      const ranks = ranksStr.split(', ').map(rank => {
+        // Extract rank number, accuracy score, and section info
+        const match = rank.match(/#?(\d+)\s*\(([0-9.]+)\)\s*-\s*(.+)/);
+        if (match) {
+          const [, rankNum, accuracy, section] = match;
+          return {
+            rank: parseInt(rankNum),
+            accuracy: parseFloat(accuracy),
+            section: section.trim()
+          };
+        }
+        return null;
+      }).filter(Boolean);
+
+      return ranks.map(rank => (
+        <div key={rank.rank} className="mb-2 last:mb-0">
+          <div className="flex items-center space-x-2">
+            <span className="bg-accent-blue text-white text-xs px-2 py-1 rounded-full font-medium">
+              #{rank.rank}
+            </span>
+            <span className="text-xs text-accent-grey bg-gray-700 px-2 py-1 rounded">
+              {(rank.accuracy * 100).toFixed(1)}%
+            </span>
+          </div>
+          <p className="text-sm text-dark-text mt-1 ml-1">{rank.section}</p>
+        </div>
+      ));
+    } catch (error) {
+      console.error('Error formatting ranks:', error);
+      return <span className="text-dark-text">{ranksStr}</span>;
+    }
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -142,12 +181,14 @@ const DocumentCard = ({ documentData }) => {
 
         {/* Ranks & Sections */}
         <motion.div variants={itemVariants} className="bg-dark-card rounded-lg p-4 border border-gray-700 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-dark-text-secondary mb-1">Ranks & Sections</p>
-              <p className="text-lg font-semibold text-dark-text">{data.ranks_sections_str || data.ranksSections}</p>
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <p className="text-sm text-dark-text-secondary mb-2">Ranks & Sections</p>
+              <div className="space-y-1">
+                {formatRanksSections(data.ranks_sections_str || data.ranksSections)}
+              </div>
             </div>
-            <BarChart3 className="w-5 h-5 text-dark-text-secondary" />
+            <BarChart3 className="w-5 h-5 text-dark-text-secondary mt-1" />
           </div>
         </motion.div>
 

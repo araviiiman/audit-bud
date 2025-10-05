@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Send, Loader2, Camera } from 'lucide-react';
+import { FileText, Send, Loader2, Camera, User, Bot } from 'lucide-react';
 
-const Sidebar = ({ onSendMessage, isLoading }) => {
+const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
   const [message, setMessage] = useState('');
 
   const handleSendMessage = async () => {
@@ -98,22 +98,80 @@ const Sidebar = ({ onSendMessage, isLoading }) => {
 
       {/* Chat Area */}
       <div className="flex-1 p-6 flex flex-col">
-        {/* Chat Message */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-dark-card rounded-lg p-4 mb-6 flex-1"
-        >
-          <div className="flex items-start space-x-3">
-            <div className="flex-shrink-0">
-              <FileText className="w-5 h-5 text-accent-blue mt-0.5" />
+        {/* Chat Messages */}
+        <div className="flex-1 overflow-y-auto mb-4 space-y-4">
+          {/* Welcome Message */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex items-start space-x-3"
+          >
+            <div className="flex-shrink-0 w-8 h-8 bg-accent-blue rounded-full flex items-center justify-center">
+              <Bot className="w-4 h-4 text-white" />
             </div>
-            <p className="text-dark-text-secondary text-sm">
-              I'm ready to answer questions about <span className="text-accent-blue font-medium">audit document</span>. What would you like to know?
-            </p>
-          </div>
-        </motion.div>
+            <div className="bg-dark-card rounded-lg p-3 max-w-[80%]">
+              <p className="text-dark-text-secondary text-sm">
+                I'm ready to answer questions about <span className="text-accent-blue font-medium">audit document</span>. What would you like to know?
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Chat Messages */}
+          {chatMessages.map((msg, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className={`flex items-start space-x-3 ${msg.type === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}
+            >
+              <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                msg.type === 'user' 
+                  ? 'bg-accent-grey' 
+                  : 'bg-accent-blue'
+              }`}>
+                {msg.type === 'user' ? (
+                  <User className="w-4 h-4 text-white" />
+                ) : (
+                  <Bot className="w-4 h-4 text-white" />
+                )}
+              </div>
+              <div className={`rounded-lg p-3 max-w-[80%] ${
+                msg.type === 'user' 
+                  ? 'bg-accent-blue text-white' 
+                  : 'bg-dark-card'
+              }`}>
+                <p className={`text-sm ${
+                  msg.type === 'user' 
+                    ? 'text-white' 
+                    : 'text-dark-text-secondary'
+                }`}>
+                  {msg.content}
+                </p>
+              </div>
+            </motion.div>
+          ))}
+
+          {/* Loading Indicator */}
+          {isLoading && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-start space-x-3"
+            >
+              <div className="flex-shrink-0 w-8 h-8 bg-accent-blue rounded-full flex items-center justify-center">
+                <Bot className="w-4 h-4 text-white" />
+              </div>
+              <div className="bg-dark-card rounded-lg p-3">
+                <div className="flex items-center space-x-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-accent-blue" />
+                  <p className="text-dark-text-secondary text-sm">Thinking...</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </div>
 
         {/* Input Area */}
         <div className="flex space-x-2">

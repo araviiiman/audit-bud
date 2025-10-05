@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { FileText } from 'lucide-react';
 import DocumentCard from './DocumentCard';
 
-const MainPanel = ({ sidebarOpen, setSidebarOpen, metadataDocuments, chatMessages }) => {
+const MainPanel = ({ sidebarOpen, setSidebarOpen, metadataDocuments }) => {
   return (
     <div className="flex-1 flex flex-col">
       {/* Header */}
@@ -30,37 +30,20 @@ const MainPanel = ({ sidebarOpen, setSidebarOpen, metadataDocuments, chatMessage
 
       {/* Main Content - Scrollable */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-8">
-          <div className="max-w-6xl mx-auto">
-            {/* Chat Messages */}
-            {chatMessages.length > 0 && (
-              <div className="mb-8 space-y-4">
-                {chatMessages.map((msg, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="bg-dark-card rounded-lg p-4 border border-gray-700"
-                  >
-                    <p className="text-dark-text-secondary text-sm">{msg}</p>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-
-            {/* Document Cards - Scrollable Container */}
-            <div className="space-y-8">
-              {metadataDocuments.length > 0 ? (
-                metadataDocuments.map((doc, index) => (
-                  <DocumentCard key={doc.id || index} documentData={doc} />
-                ))
-              ) : (
-                <DocumentCard />
-              )}
-            </div>
-          </div>
-        </div>
+             <div className="p-8">
+               <div className="max-w-6xl mx-auto">
+                 {/* Document Cards - Scrollable Container */}
+                 <div className="space-y-8">
+                   {metadataDocuments.length > 0 ? (
+                     metadataDocuments.map((doc, index) => (
+                       <DocumentCard key={doc.document_id || doc.id || index} documentData={doc} />
+                     ))
+                   ) : (
+                     <DocumentCard />
+                   )}
+                 </div>
+               </div>
+             </div>
       </div>
     </div>
   );
