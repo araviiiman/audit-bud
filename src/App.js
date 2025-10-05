@@ -5,9 +5,7 @@ import MainPanel from './components/MainPanel';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [chatMessages, setChatMessages] = useState([
-    { type: 'bot', content: "I'm ready to answer questions about audit document. What would you like to know?" }
-  ]);
+  const [chatMessages, setChatMessages] = useState([]);
   const [metadataDocuments, setMetadataDocuments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 

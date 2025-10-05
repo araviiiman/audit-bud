@@ -18,6 +18,25 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
     }
   };
 
+  // Simple markdown formatter for bot responses
+  const formatBotResponse = (text) => {
+    if (!text) return '';
+    
+    // Convert **text** to <strong>text</strong>
+    let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Convert *text* to <em>text</em>
+    formatted = formatted.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    
+    // Convert line breaks to <br>
+    formatted = formatted.replace(/\n/g, '<br>');
+    
+    // Convert bullet points
+    formatted = formatted.replace(/^\* (.*$)/gm, '• $1');
+    
+    return formatted;
+  };
+
   const handleScreenshot = async () => {
     try {
       // Use html2canvas to capture the entire page
@@ -110,8 +129,8 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
             <div className="flex-shrink-0 w-8 h-8 bg-accent-blue rounded-full flex items-center justify-center">
               <Bot className="w-4 h-4 text-white" />
             </div>
-            <div className="bg-dark-card rounded-lg p-3 max-w-[80%]">
-              <p className="text-dark-text-secondary text-sm">
+            <div className="bg-gray-100 rounded-lg p-4 max-w-[85%]">
+              <p className="text-gray-800 text-sm">
                 I'm ready to answer questions about <span className="text-accent-blue font-medium">audit document</span>. What would you like to know?
               </p>
             </div>
@@ -137,18 +156,23 @@ const Sidebar = ({ onSendMessage, isLoading, chatMessages }) => {
                   <Bot className="w-4 h-4 text-white" />
                 )}
               </div>
-              <div className={`rounded-lg p-3 max-w-[80%] ${
+              <div className={`rounded-lg p-4 max-w-[85%] ${
                 msg.type === 'user' 
                   ? 'bg-accent-blue text-white' 
-                  : 'bg-dark-card'
+                  : 'bg-gray-100 text-gray-800'
               }`}>
-                <p className={`text-sm ${
-                  msg.type === 'user' 
-                    ? 'text-white' 
-                    : 'text-dark-text-secondary'
-                }`}>
-                  {msg.content || 'No content'}
-                </p>
+                {msg.type === 'user' ? (
+                  <p className="text-sm text-white">
+                    {msg.content || 'No content'}
+                  </p>
+                ) : (
+                  <div 
+                    className="text-sm text-gray-800 prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={{ 
+                      __html: formatBotResponse(msg.content || 'No content') 
+                    }}
+                  />
+                )}
               </div>
             </motion.div>
           ))}
