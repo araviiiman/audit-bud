@@ -5,9 +5,9 @@ import DocumentCard from './DocumentCard';
 
 const MainPanel = ({ sidebarOpen, setSidebarOpen, metadataDocuments }) => {
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col h-screen overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-gray-700 flex items-center justify-between">
+      <div className="p-6 border-b border-gray-700 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-br from-accent-blue to-blue-600 rounded-lg flex items-center justify-center">
             <FileText className="w-6 h-6 text-white" />
